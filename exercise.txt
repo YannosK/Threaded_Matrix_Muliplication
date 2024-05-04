@@ -1,0 +1,7 @@
+2-Dimensional arrays 10^3 x 10^3 A, B filled with "rand in C". Compute the product
+of A and B :
+a) single thread
+b) eight threads.
+
+Check the difference in the
+execution time.
