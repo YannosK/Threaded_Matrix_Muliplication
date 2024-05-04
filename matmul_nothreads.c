@@ -22,6 +22,19 @@ int main(void)
     matrix_printer(&B[0][0], size);
     matrix_printer(&C[0][0], size);
 
+    // Matrix multiplication A * B = C
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {
+            for (int k = 0; k < size; k++)
+            {
+                C[i][j] += A[i][k] * B[k][j];
+            }
+        }
+    }
+    matrix_printer(&C[0][0], size);
+
     return 0;
 }
 
@@ -60,7 +73,7 @@ void matrix_printer(int *first_addr, unsigned int dim)
         {
             printf("%d\t", *(first_addr + i * dim + j));
         }
-        printf("\b\b\b\b\b|");
+        printf("\b\b\b|");
     }
     printf("\n");
 }
