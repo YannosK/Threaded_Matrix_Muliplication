@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define size 4
+#define size 10
 
 void matrix_init_rand(int *first_addr, unsigned int dim);
 void matrix_init_zeros(int *first_addr, unsigned int dim);
@@ -14,6 +14,9 @@ int main(void)
     int B[size][size];
     int C[size][size];
 
+    clock_t snap;
+    long double elapsed;
+
     matrix_init_rand(&A[0][0], size);
     matrix_init_rand(&B[0][0], size);
     matrix_init_zeros(&C[0][0], size);
@@ -23,6 +26,7 @@ int main(void)
     matrix_printer(&C[0][0], size);
 
     // Matrix multiplication A * B = C
+    snap = clock();
     for (int i = 0; i < size; i++)
     {
         for (int j = 0; j < size; j++)
@@ -33,6 +37,9 @@ int main(void)
             }
         }
     }
+    snap = clock() - snap;
+    elapsed = ((long double)snap) * 1000000 / CLOCKS_PER_SEC;
+    printf("\nSequential matrix multiplication of 4x4 matrixes took: %.2Lf ms\n", elapsed);
     matrix_printer(&C[0][0], size);
 
     return 0;
