@@ -8,12 +8,13 @@ void matrix_init_rand(int *first_addr, unsigned int dim);
 void matrix_init_zeros(int *first_addr, unsigned int dim);
 void matrix_printer(int *first_addr, unsigned int dim);
 
+// I store them in static memory, else I run out of stack space
+int A[size][size];
+int B[size][size];
+int C[size][size];
+
 int main(void)
 {
-    int A[size][size];
-    int B[size][size];
-    int C[size][size];
-
     clock_t snap;
     long double elapsed;
 
@@ -34,7 +35,7 @@ int main(void)
         }
     }
     snap = clock() - snap;
-    elapsed = ((long double)snap) * 1000000 / CLOCKS_PER_SEC;
+    elapsed = ((long double)snap) * 1000 / CLOCKS_PER_SEC;
     printf("\nSequential matrix multiplication of 4x4 matrixes took: %.2Lf ms\n", elapsed);
 
     return 0;
