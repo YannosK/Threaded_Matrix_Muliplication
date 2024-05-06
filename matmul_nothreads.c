@@ -15,15 +15,17 @@ int C[SIZE][SIZE];
 
 int main(void)
 {
-    clock_t snap;
-    long double elapsed;
+    clockid_t clk_id = CLOCK_MONOTONIC;
+    struct timespec tspec;
+    long double dur;
 
     matrix_init_rand(&A[0][0], SIZE);
     matrix_init_rand(&B[0][0], SIZE);
     matrix_init_zeros(&C[0][0], SIZE);
 
     // Matrix multiplication A * B = C
-    snap = clock();
+    clock_gettime(clk_id, &tspec);
+    dur = (long double)(tspec.tv_sec) + ((long double)(tspec.tv_nsec) / 1000000000);
     for (int i = 0; i < SIZE; i++)
     {
         for (int j = 0; j < SIZE; j++)
@@ -34,9 +36,9 @@ int main(void)
             }
         }
     }
-    snap = clock() - snap;
-    elapsed = ((long double)snap) * 1000 / CLOCKS_PER_SEC;
-    printf("\nSequential matrix multiplication took: %.2Lf ms\n", elapsed);
+    clock_gettime(clk_id, &tspec);
+    dur = ((long double)(tspec.tv_sec) + ((long double)(tspec.tv_nsec) / 1000000000)) - dur;
+    printf("\nSequential matrix multiplication took: %.6Lf seconds\n", dur);
 
     return 0;
 }

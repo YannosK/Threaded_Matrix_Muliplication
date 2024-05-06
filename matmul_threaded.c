@@ -34,8 +34,9 @@ int main(void)
     assert(SIZE % THREAD_NUM == 0 && SIZE >= THREAD_NUM);
 
     // variables used for timing
-    clock_t snap;
-    long double elapsed;
+    clockid_t clk_id = CLOCK_MONOTONIC;
+    struct timespec tspec;
+    long double dur;
 
     // variables used for partial multiplication functions
     struct p p_structs[THREAD_NUM];
@@ -63,16 +64,17 @@ int main(void)
         arg[i] = &p_structs[i];
     }
 
-    snap = clock();
+    clock_gettime(clk_id, &tspec);
+    dur = (long double)(tspec.tv_sec) + ((long double)(tspec.tv_nsec) / 1000000000);
     // Creating the threads
     for (int n = 0; n < THREAD_NUM; n++)
         pthread_create(&(t[n]), NULL, matrix_partial_multiplier, (void *)(arg[n]));
     // Waiting for them to finish
     for (int n = 0; n < THREAD_NUM; n++)
         pthread_join(t[n], (void **)(&(ret[n])));
-    snap = clock() - snap;
-    elapsed = ((long double)snap) * 1000 / CLOCKS_PER_SEC;
-    printf("\nThreaded matrix multiplication took: %.2Lf ms\n", elapsed);
+    clock_gettime(clk_id, &tspec);
+    dur = ((long double)(tspec.tv_sec) + ((long double)(tspec.tv_nsec) / 1000000000)) - dur;
+    printf("\nThreaded matrix multiplication took: %.6Lf seconds\n", dur);
 
     return 0;
 }
