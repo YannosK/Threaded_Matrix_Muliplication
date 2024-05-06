@@ -4,8 +4,8 @@
 #include <pthread.h>
 #include <assert.h>
 
-#define SIZE 4
-#define THREAD_NUM 4
+#define SIZE 2
+#define THREAD_NUM 2
 
 void *matrix_partial_multiplier(void *args);
 void matrix_init_rand(int *first_addr, unsigned int dim);
@@ -31,16 +31,19 @@ int C[SIZE][SIZE];
 int main(void)
 {
     // some testing for my defines
-    assert(SIZE % THREAD_NUM == 0);
+    assert(SIZE % THREAD_NUM == 0 && SIZE >= THREAD_NUM);
 
-    // variable decleration
+    // variables used for timing
     clock_t snap;
     long double elapsed;
 
+    // variables used for partial multiplication functions
     struct p p_structs[THREAD_NUM];
     params arg[THREAD_NUM];
 
-    // pthread_t t[2];
+    // variables used in the threads
+    pthread_t t[THREAD_NUM];
+    int *ret[THREAD_NUM];
 
     // matrix initialization
     matrix_init_rand(&A[0][0], SIZE);
@@ -60,21 +63,19 @@ int main(void)
         arg[i] = &p_structs[i];
     }
 
-    // Matrix multiplication A * B = C
+    snap = clock();
+    // Creating the threads
+    for (int n = 0; n < THREAD_NUM; n++)
+        pthread_create(&(t[n]), NULL, matrix_partial_multiplier, (void *)(arg[n]));
+    // Waiting for them to finish
+    for (int n = 0; n < THREAD_NUM; n++)
+        pthread_join(t[n], (void **)(&(ret[n])));
+    snap = clock() - snap;
+    elapsed = ((long double)snap) * 1000 / CLOCKS_PER_SEC;
+    printf("\nThreaded matrix multiplication took: %.2Lf ms\n", elapsed);
 
     matrix_printer(&A[0][0], SIZE);
     matrix_printer(&B[0][0], SIZE);
-    matrix_printer(&C[0][0], SIZE);
-
-    for (int l = 0; l < THREAD_NUM; l++)
-    {
-        snap = clock();
-        matrix_partial_multiplier((void *)(arg[l]));
-        snap = clock() - snap;
-        elapsed = ((long double)snap) * 1000 / CLOCKS_PER_SEC;
-        printf("\nSequential matrix multiplication of %d half took: %.2Lf ms\n", l, elapsed);
-    }
-
     matrix_printer(&C[0][0], SIZE);
 
     return 0;

@@ -2,33 +2,33 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define size 1000
+#define SIZE 1000
 
 void matrix_init_rand(int *first_addr, unsigned int dim);
 void matrix_init_zeros(int *first_addr, unsigned int dim);
 void matrix_printer(int *first_addr, unsigned int dim);
 
 // I store them in static memory, else I run out of stack space
-int A[size][size];
-int B[size][size];
-int C[size][size];
+int A[SIZE][SIZE];
+int B[SIZE][SIZE];
+int C[SIZE][SIZE];
 
 int main(void)
 {
     clock_t snap;
     long double elapsed;
 
-    matrix_init_rand(&A[0][0], size);
-    matrix_init_rand(&B[0][0], size);
-    matrix_init_zeros(&C[0][0], size);
+    matrix_init_rand(&A[0][0], SIZE);
+    matrix_init_rand(&B[0][0], SIZE);
+    matrix_init_zeros(&C[0][0], SIZE);
 
     // Matrix multiplication A * B = C
     snap = clock();
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < SIZE; i++)
     {
-        for (int j = 0; j < size; j++)
+        for (int j = 0; j < SIZE; j++)
         {
-            for (int k = 0; k < size; k++)
+            for (int k = 0; k < SIZE; k++)
             {
                 C[i][j] += A[i][k] * B[k][j];
             }
