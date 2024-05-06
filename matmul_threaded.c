@@ -3,7 +3,7 @@
 #include <time.h>
 #include <pthread.h>
 
-#define size 8
+#define size 4
 
 void *matrix_partial_multiplier(void *args);
 void matrix_init_rand(int *first_addr, unsigned int dim);
@@ -36,11 +36,42 @@ int main(void)
     matrix_init_rand(&B[0][0], size);
     matrix_init_zeros(&C[0][0], size);
 
+    matrix_printer(&A[0][0], size);
+    matrix_printer(&B[0][0], size);
+    matrix_printer(&C[0][0], size);
+
+    struct p p1;
+    p1.A = &A[0][0];
+    p1.B = &B[0][0];
+    p1.C = &C[0][0];
+    p1.A_rows = 2;
+    p1.A_columns = 4;
+    p1.B_columns = 4;
+    params arg1 = &p1;
+
+    struct p p2;
+    p2.A = &A[2][0];
+    p2.B = &B[0][0];
+    p2.C = &C[2][0];
+    p2.A_rows = 2;
+    p2.A_columns = 4;
+    p2.B_columns = 4;
+    params arg2 = &p2;
+
     // Matrix multiplication A * B = C
     snap = clock();
+    matrix_partial_multiplier((void *)arg1);
     snap = clock() - snap;
     elapsed = ((long double)snap) * 1000 / CLOCKS_PER_SEC;
-    printf("\nSequential matrix multiplication of 4x4 matrixes took: %.2Lf ms\n", elapsed);
+    printf("\nSequential matrix multiplication of first half took: %.2Lf ms\n", elapsed);
+
+    snap = clock();
+    matrix_partial_multiplier((void *)arg2);
+    snap = clock() - snap;
+    elapsed = ((long double)snap) * 1000 / CLOCKS_PER_SEC;
+    printf("\nSequential matrix multiplication of second half took: %.2Lf ms\n", elapsed);
+
+    matrix_printer(&C[0][0], size);
 
     return 0;
 }
@@ -66,7 +97,8 @@ void *matrix_partial_multiplier(void *args)
             {
                 // C[i][j] += A[i][k] * B[k][j];
                 // *(first_addr + i * dim + j)
-                (*(c + i * c_columns + j)) += (*(a + i * c_sum + k)) + (*(b + k * c_columns + j));
+                // (*(c + i * c_columns + j)) = (*(c + i * c_columns + j)) + (*(a + i * c_sum + k)) + (*(b + k * c_columns + j));
+                (*(c + i * c_columns + j)) += (*(a + i * c_sum + k)) * (*(b + k * c_columns + j));
             }
         }
     }
