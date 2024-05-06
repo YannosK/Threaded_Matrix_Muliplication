@@ -4,8 +4,8 @@
 #include <pthread.h>
 #include <assert.h>
 
-#define SIZE 2
-#define THREAD_NUM 2
+#define SIZE 1000
+#define THREAD_NUM 8
 
 void *matrix_partial_multiplier(void *args);
 void matrix_init_rand(int *first_addr, unsigned int dim);
@@ -74,10 +74,6 @@ int main(void)
     elapsed = ((long double)snap) * 1000 / CLOCKS_PER_SEC;
     printf("\nThreaded matrix multiplication took: %.2Lf ms\n", elapsed);
 
-    matrix_printer(&A[0][0], SIZE);
-    matrix_printer(&B[0][0], SIZE);
-    matrix_printer(&C[0][0], SIZE);
-
     return 0;
 }
 
@@ -101,8 +97,6 @@ void *matrix_partial_multiplier(void *args)
             for (int k = 0; k < c_sum; k++)
             {
                 // C[i][j] += A[i][k] * B[k][j];
-                // *(first_addr + i * dim + j)
-                // (*(c + i * c_columns + j)) = (*(c + i * c_columns + j)) + (*(a + i * c_sum + k)) + (*(b + k * c_columns + j));
                 (*(c + i * c_columns + j)) += (*(a + i * c_sum + k)) * (*(b + k * c_columns + j));
             }
         }
@@ -116,7 +110,7 @@ void matrix_init_rand(int *first_addr, unsigned int dim)
     {
         for (int j = 0; j < dim; j++)
         {
-            *(first_addr + i * dim + j) = (rand() % 20) - 10;
+            *(first_addr + i * dim + j) = (rand() % RAND_MAX) - (RAND_MAX / 2);
         }
     }
 }

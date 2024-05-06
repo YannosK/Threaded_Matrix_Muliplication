@@ -36,7 +36,7 @@ int main(void)
     }
     snap = clock() - snap;
     elapsed = ((long double)snap) * 1000 / CLOCKS_PER_SEC;
-    printf("\nSequential matrix multiplication of 4x4 matrixes took: %.2Lf ms\n", elapsed);
+    printf("\nSequential matrix multiplication took: %.2Lf ms\n", elapsed);
 
     return 0;
 }
@@ -51,7 +51,7 @@ void matrix_init_rand(int *first_addr, unsigned int dim)
     {
         for (int j = 0; j < dim; j++)
         {
-            *(first_addr + i * dim + j) = (rand() % 20) - 10;
+            *(first_addr + i * dim + j) = (rand() % RAND_MAX) - (RAND_MAX / 2);
         }
     }
 }
