@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define SIZE 1000
+#define SIZE 1000 // dimension of the square matrices (they are SIZE x SIZE)
 
 void matrix_init_rand(int *first_addr, unsigned int dim);
 void matrix_init_zeros(int *first_addr, unsigned int dim);

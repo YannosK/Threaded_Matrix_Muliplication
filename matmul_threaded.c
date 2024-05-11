@@ -4,22 +4,26 @@
 #include <pthread.h>
 #include <assert.h>
 
-#define SIZE 1000
-#define THREAD_NUM 8
+#define SIZE 1000    // dimension of the square matrices (they are SIZE x SIZE)
+#define THREAD_NUM 8 // number of threads to run the matrix multiplication. Must devide SIZE exactly!
 
 void *matrix_partial_multiplier(void *args);
 void matrix_init_rand(int *first_addr, unsigned int dim);
 void matrix_init_zeros(int *first_addr, unsigned int dim);
 void matrix_printer(int *first_addr, unsigned int dim);
 
+/*
+    struct containning the arguments that are required by the function matrix_partial_multiplier
+
+*/
 struct p
 {
-    int *A;
-    int *B;
-    int *C;
-    unsigned int A_rows;
-    unsigned int B_columns;
-    unsigned int A_columns; // same as B rows
+    int *A;                 // address of first element of matrix A (element A[0][0])
+    int *B;                 // address of first element of matrix B (element B[0][0])
+    int *C;                 // address of first element of matrix C (element C[0][0])
+    unsigned int A_rows;    // number of rows of matrix A. Same as the number of rows of result matrix C
+    unsigned int B_columns; // number of columns of matrix B. Same as the number of columns of result matrix C
+    unsigned int A_columns; // number of columns of matrix A. Same as B rows
 };
 typedef struct p *params;
 
@@ -39,10 +43,12 @@ int main(void)
     long double dur;
 
     // variables used for partial multiplication functions
+    // creating an array of argument structs, each one for every thread
     struct p p_structs[THREAD_NUM];
     params arg[THREAD_NUM];
 
     // variables used in the threads
+    // again arrays of argument structs, each used by one thread
     pthread_t t[THREAD_NUM];
     int *ret[THREAD_NUM];
 
@@ -83,6 +89,12 @@ int main(void)
 // Function definitions
 ////////////////////////////////////////////////////////////////////////////////////////
 
+/*
+    Performs matrix multiplication of A (MxN) and B(NxK) to produce C(MxK)
+    It takes as argument a null pointer to a struct
+    The struct must be of type: struct p, with pointer to it being a defined type: params
+    It has the structure required for functions to be passed as arguments in the pthreads library's functions
+*/
 void *matrix_partial_multiplier(void *args)
 {
     int *a = ((params)args)->A;
@@ -106,6 +118,10 @@ void *matrix_partial_multiplier(void *args)
     return NULL;
 }
 
+/*
+    initialises a square matrix to random default values
+    Values are in the range -(RAND_MAX / 2) to (RAND_MAX / 2)
+*/
 void matrix_init_rand(int *first_addr, unsigned int dim)
 {
     for (int i = 0; i < dim; i++)
@@ -117,6 +133,9 @@ void matrix_init_rand(int *first_addr, unsigned int dim)
     }
 }
 
+/*
+    initialises a square matrix to zero element values
+*/
 void matrix_init_zeros(int *first_addr, unsigned int dim)
 {
     for (int i = 0; i < dim; i++)
@@ -128,6 +147,11 @@ void matrix_init_zeros(int *first_addr, unsigned int dim)
     }
 }
 
+/*
+    Prints a square matrix in the terminal
+    WARNING:    since it prints out in the terminal matrixes with very large element values,
+                or too many values, might not be printed correctly
+*/
 void matrix_printer(int *first_addr, unsigned int dim)
 {
     for (int i = 0; i < dim; i++)
