@@ -14,7 +14,6 @@ void matrix_printer(int *first_addr, unsigned int dim);
 
 /*
     struct containning the arguments that are required by the function matrix_partial_multiplier
-
 */
 struct p
 {
@@ -85,9 +84,9 @@ int main(void)
     return 0;
 }
 
-////////////////////////////////////////////////////////////////////////////////////////
+/********************************************************/
 // Function definitions
-////////////////////////////////////////////////////////////////////////////////////////
+/********************************************************/
 
 /*
     Performs matrix multiplication of A (MxN) and B(NxK) to produce C(MxK)
@@ -110,7 +109,7 @@ void *matrix_partial_multiplier(void *args)
         {
             for (int k = 0; k < c_sum; k++)
             {
-                // C[i][j] += A[i][k] * B[k][j];
+                // the following is C[i][j] += A[i][k] * B[k][j], with pointer arithmetics
                 (*(c + i * c_columns + j)) += (*(a + i * c_sum + k)) * (*(b + k * c_columns + j));
             }
         }
@@ -149,7 +148,7 @@ void matrix_init_zeros(int *first_addr, unsigned int dim)
 
 /*
     Prints a square matrix in the terminal
-    WARNING:    since it prints out in the terminal matrixes with very large element values,
+    WARNING:    since it prints out in the terminal, matrixes with very large element values,
                 or too many values, might not be printed correctly
 */
 void matrix_printer(int *first_addr, unsigned int dim)

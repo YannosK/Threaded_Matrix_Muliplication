@@ -45,9 +45,9 @@ int main(void)
     return 0;
 }
 
-////////////////////////////////////////////////////////////////////////////////////////
+/********************************************************/
 // Function definitions
-////////////////////////////////////////////////////////////////////////////////////////
+/********************************************************/
 
 /*
     initialises a square matrix to random default values
@@ -80,7 +80,7 @@ void matrix_init_zeros(int *first_addr, unsigned int dim)
 
 /*
     Prints a square matrix in the terminal
-    WARNING:    since it prints out in the terminal matrixes with very large element values,
+    WARNING:    since it prints out in the terminal, matrixes with very large element values,
                 or too many values, might not be printed correctly
 */
 void matrix_printer(int *first_addr, unsigned int dim)
